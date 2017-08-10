@@ -1,7 +1,7 @@
 module distrito
 
 sig Distrito{
-	policiais: set Policial 
+	policiais: set Policial
 } 
 
 abstract sig Policial{}
@@ -9,7 +9,7 @@ abstract sig Policial{}
 sig Pol_Veterano extends Policial{}
 sig Pol_Novato extends Policial{}
 
-sig Xerife{}
+one sig Xerife{}
 
 sig Detetive{}
 
@@ -20,8 +20,15 @@ sig Cham_Verde extends Chamada{}
 sig Cham_Azul extends Chamada{}
 sig Cham_Vermelho extends Chamada{}
 
+fact {
+	all d:Distrito | some d.policiais
+	#Detetive = 2
+	all p:Policial | one p.~policiais
+	#Pol_Veterano = 3
+	#Pol_Novato = 3
+}
 
 pred show[]{
 }
 
-run show for 3
+run show for 6
