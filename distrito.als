@@ -28,7 +28,6 @@ fact {
 	QtdeDePoliciaisNoDistrito
 	TodoPolicialEstaNoDistrito
 	TodoDetetiveEstaNoDistrito
-	#Distrito = 2
 }
 
 /**Predicados**/
@@ -54,4 +53,4 @@ pred TodoDetetiveEstaNoDistrito{
 pred show[]{
 }
 
-run show for 20
+run show for 10
