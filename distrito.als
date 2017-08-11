@@ -93,7 +93,22 @@ pred TodoPolicialEstaNoDistrito{
 pred TodoDetetiveEstaNoDistrito{ 
 	all e:Detetive | one d:Distrito | e in d.detetives
 }
+/**Asserts**/
+assert ExistePolicial{
+	all dist:Distrito | #(dist.pol_vet + dist.pol_nov) > 0
+}
 
+assert TestaChamadaAzul{
+	all c:Cham_Azul | #(c.pol_vet + c.pol_nov + c.xer) = 4
+}
+
+assert TestaChamadaVermelha{
+	all c:Cham_Vermelho | #(c.pol_vet + c.pol_nov + c.xer + c.det) = 5
+}
+/**Checks**/
+check ExistePolicial
+check TestaChamadaAzul
+check TestaChamadaVermelha
 /**show**/
 pred show[]{
 }
