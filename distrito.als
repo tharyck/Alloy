@@ -20,15 +20,28 @@ abstract sig Chamada{}
 
 sig Cham_Branco extends Chamada{
 	pol_vet: some Pol_Veterano,
-	pol_nov: set Pol_Novato	
+	pol_nov: set Pol_Novato,
+	xer: set Xerife	
 }
 
 sig Cham_Verde extends Chamada{
 	pol_vet: some Pol_Veterano,
-	pol_nov: set Pol_Novato
+	pol_nov: set Pol_Novato,
+	xer: set Xerife
 }
-sig Cham_Azul extends Chamada{}
-sig Cham_Vermelho extends Chamada{}
+
+sig Cham_Azul extends Chamada{
+		pol_vet: some Pol_Veterano,
+		pol_nov: set Pol_Novato,
+		xer: set Xerife
+}
+
+sig Cham_Vermelho extends Chamada{
+		pol_vet: some Pol_Veterano,
+		pol_nov: set Pol_Novato,
+		xer: set Xerife,
+		det: some Detetive
+}
 
 /**fact**/
 fact {
@@ -38,17 +51,28 @@ fact {
 	TodoDetetiveEstaNoDistrito
 	CodigoBranco
 	CodigoVerde
+	CodigoAzul
+	CodigoVermelho
 }
 
 /**Predicados**/
 
 pred CodigoBranco{
-	all c:Cham_Branco |  #(c.pol_vet + c.pol_nov) < 3
+	all c:Cham_Branco |  #(c.pol_vet + c.pol_nov + c.xer) < 3
 }
 
 pred CodigoVerde{
-		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov) < 4
-		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov) > 1
+		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov + c.xer) < 4
+		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov + c.xer) > 1
+}
+
+pred CodigoAzul{
+		all c:Cham_Azul |  #(c.pol_vet + c.pol_nov + c.xer) = 4
+}
+
+pred CodigoVermelho{
+		all c:Cham_Vermelho |  #(c.pol_vet + c.pol_nov + c.xer) = 4
+		all c:Cham_Vermelho | #(c.det) = 1
 }
 pred TodoDistritoTemPoliciais{
 	all d:Distrito | some d.pol_vet + d.pol_nov
