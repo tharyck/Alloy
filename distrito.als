@@ -1,7 +1,8 @@
 module distrito
 
 sig Distrito{
-	policiais: set Policial,
+	pol_vet: set Pol_Veterano,
+	pol_nov: set Pol_Novato,
 	xerife: one Xerife,
 	detetives: set Detetive
 } 
@@ -32,17 +33,19 @@ fact {
 
 /**Predicados**/
 pred TodoDistritoTemPoliciais{
-	all d:Distrito | some d.policiais
+	all d:Distrito | some d.pol_vet + d.pol_nov
 }
 
 pred QtdeDePoliciaisNoDistrito{
 	all d:Distrito | #(d.detetives) = 2
-	all d:Distrito | #(d.policiais) = 6
+	all d:Distrito | #(d.pol_vet) = 3
+	all d:Distrito | #(d.pol_nov) = 3
 	all x:Xerife | one d:Distrito | ! (x != d.xerife)
 }
 
 pred TodoPolicialEstaNoDistrito{
-	all p:Policial | one d:Distrito | p in d.policiais
+	all p:Pol_Veterano | one d:Distrito | p in d.pol_vet
+    all p:Pol_Novato | one d:Distrito | p in d.pol_nov
 }
 
 pred TodoDetetiveEstaNoDistrito{ 
