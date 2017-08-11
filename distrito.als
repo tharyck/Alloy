@@ -22,7 +22,11 @@ sig Cham_Branco extends Chamada{
 	pol_vet: some Pol_Veterano,
 	pol_nov: set Pol_Novato	
 }
-sig Cham_Verde extends Chamada{}
+
+sig Cham_Verde extends Chamada{
+	pol_vet: some Pol_Veterano,
+	pol_nov: set Pol_Novato
+}
 sig Cham_Azul extends Chamada{}
 sig Cham_Vermelho extends Chamada{}
 
@@ -33,12 +37,18 @@ fact {
 	TodoPolicialEstaNoDistrito
 	TodoDetetiveEstaNoDistrito
 	CodigoBranco
+	CodigoVerde
 }
 
 /**Predicados**/
 
 pred CodigoBranco{
 	all c:Cham_Branco |  #(c.pol_vet + c.pol_nov) < 3
+}
+
+pred CodigoVerde{
+		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov) < 4
+		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov) > 1
 }
 pred TodoDistritoTemPoliciais{
 	all d:Distrito | some d.pol_vet + d.pol_nov
