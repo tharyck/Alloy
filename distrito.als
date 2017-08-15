@@ -3,7 +3,7 @@ module distrito
 sig Distrito{
 	pol_vet: set Pol_Veterano,
 	pol_nov: set Pol_Novato,
-	xerife: one Xerife,
+	xerife: set Xerife,
 	detetives: set Detetive
 } 
 
@@ -19,25 +19,25 @@ sig Detetive{}
 abstract sig Chamada{}
 
 sig Cham_Branco extends Chamada{
-	pol_vet: some Pol_Veterano,
+	pol_vet: set Pol_Veterano,
 	pol_nov: set Pol_Novato,
 	xer: set Xerife	
 }
 
 sig Cham_Verde extends Chamada{
-	pol_vet: some Pol_Veterano,
+	pol_vet: set Pol_Veterano,
 	pol_nov: set Pol_Novato,
 	xer: set Xerife
 }
 
 sig Cham_Azul extends Chamada{
-		pol_vet: some Pol_Veterano,
+		pol_vet: set Pol_Veterano,
 		pol_nov: set Pol_Novato,
 		xer: set Xerife
 }
 
 sig Cham_Vermelho extends Chamada{
-		pol_vet: some Pol_Veterano,
+		pol_vet: set Pol_Veterano,
 		pol_nov: set Pol_Novato,
 		xer: set Xerife,
 		det: some Detetive
@@ -59,11 +59,12 @@ fact {
 
 pred CodigoBranco{
 	all c:Cham_Branco |  #(c.pol_vet + c.pol_nov + c.xer) < 3
+	all c:Cham_Branco | #(c.pol_vet + c.xer) != 0
 }
 
 pred CodigoVerde{
 		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov + c.xer) < 4
-		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov + c.xer) > 1
+		all c:Cham_Verde |  #(c.pol_vet + c.xer) != 0
 }
 
 pred CodigoAzul{
@@ -82,7 +83,7 @@ pred QtdeDePoliciaisNoDistrito{
 	all d:Distrito | #(d.detetives) = 2
 	all d:Distrito | #(d.pol_vet) = 3
 	all d:Distrito | #(d.pol_nov) = 3
-	all x:Xerife | one d:Distrito | ! (x != d.xerife)
+	all x:Xerife   | one d:Distrito | ! (x != d.xerife)
 }
 
 pred TodoPolicialEstaNoDistrito{
@@ -93,9 +94,10 @@ pred TodoPolicialEstaNoDistrito{
 pred TodoDetetiveEstaNoDistrito{ 
 	all e:Detetive | one d:Distrito | e in d.detetives
 }
+
 /**Asserts**/
 assert ExistePolicial{
-	all dist:Distrito | #(dist.pol_vet + dist.pol_nov) > 0
+	all dist:Distrito | #(dist.pol_vet + dist.pol_nov) != 0
 }
 
 assert TestaChamadaAzul{
