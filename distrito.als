@@ -4,7 +4,8 @@ one sig Distrito{
 	pol_vet: set Pol_Veterano,
 	pol_nov: set Pol_Novato,
 	xerife: set Xerife,
-	detetives: set Detetive
+	detetives: set Detetive,
+	chamadas: set Chamada
 } 
 
 abstract sig Policial{}
@@ -17,10 +18,10 @@ sig Xerife{}
 sig Detetive{}
 
 abstract sig Chamada{
-	pol_vet: set Pol_Veterano,
-	pol_nov: set Pol_Novato,
+	pol_vt: set Pol_Veterano,
+	pol_nv: set Pol_Novato,
 	xer: set Xerife,
-	det: some Detetive
+	det: set Detetive
 }
 
 sig Cham_Branco extends Chamada{}
@@ -33,83 +34,88 @@ sig Cham_Vermelho extends Chamada{}
 
 /**fact**/
 fact {
-	TodoDistritoTemPoliciais
-	QtdeDePoliciaisNoDistrito
-	TodoPolicialEstaNoDistrito
-	TodoDetetiveEstaNoDistrito
+	PresencaDePoliciais 	//Todo policial está em um distrito
+	QtdeDePoliciais		   //Quantidade de Policiais no distrito
+	PoliciaisChamadas	
+	ChamadasParaDistrito //Todo chamada é endereçada a um distrito
+	ChamadasPoliciais
 	CodigoBranco
 	CodigoVerde
 	CodigoAzul
 	CodigoVermelho
-	TotalDePessoas
 }
+
 
 /**Predicados**/
-
-pred CodigoBranco{
-	all c:Cham_Branco |  #(c.pol_vet + c.pol_nov + c.xer) < 3
-	all c:Cham_Branco | #(c.pol_vet + c.xer) != 0
-	all c:Cham_Branco | #(c.det) = 0
+pred PresencaDePoliciais {
+	//Todo policial está em um distrito
+	all pol_v: Pol_Veterano | one pol_v.~pol_vet
+	all pol_n: Pol_Novato | one pol_n.~pol_nov
+	all dt: Detetive | one dt.~detetives
+	all xf: Xerife | one xf.~xerife
 }
 
-pred CodigoVerde{
-		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov + c.xer) < 4
-		all c:Cham_Verde |  #(c.pol_vet + c.pol_nov + c.xer) > 1
-		all c:Cham_Verde |  #(c.pol_vet + c.xer) != 0
-		all c:Cham_Verde | #(c.det) = 0
-}
-
-pred CodigoAzul{
-		all c:Cham_Azul |  #(c.pol_vet + c.pol_nov + c.xer) = 4
-		all c:Cham_Azul | #(c.det) = 0
-}
-
-pred CodigoVermelho{
-		all c:Cham_Vermelho |  #(c.pol_vet + c.pol_nov + c.xer) = 4
-		all c:Cham_Vermelho | #(c.det) = 1
-}
-
-pred TodoDistritoTemPoliciais{
-	all d:Distrito | some d.pol_vet + d.pol_nov
-}
-
-pred TotalDePessoas{
-	all c:Chamada, d:Distrito | #(c.pol_vet + d.pol_vet) = 3
-	all c:Chamada, d:Distrito | #(c.pol_nov + d.pol_nov) = 3
-	all c:Chamada, d:Distrito | #(c.det + d.detetives) = 2
-	all c:Chamada, d:Distrito | #(c.xer + d.xerife) = 1
-}
-pred QtdeDePoliciaisNoDistrito{
+pred QtdeDePoliciais{
+	//Quantidade de Policiais no distrito
 	all d:Distrito | #(d.detetives) = 2
 	all d:Distrito | #(d.pol_vet) = 3
 	all d:Distrito | #(d.pol_nov) = 3
-	all x:Xerife   | one d:Distrito | ! (x != d.xerife)
+	all d:Distrito | # (d.xerife) = 1
 }
 
-pred TodoPolicialEstaNoDistrito{
-	all p:Pol_Veterano | one d:Distrito | p in d.pol_vet
-    all p:Pol_Novato | one d:Distrito | p in d.pol_nov
-	all det: Detetive | one d:Distrito | det in d.detetives
-	all xer:Xerife | one d:Distrito | xer in d.xerife
+pred ChamadasParaDistrito{
+	//Todo chamada é endereçada a um distrito
+	all c:Chamada | one c.~chamadas
 }
 
-pred TodoDetetiveEstaNoDistrito{ 
-	all e:Detetive | one d:Distrito | e in d.detetives
+pred PoliciaisChamadas {
+	all c:Chamada, d:Distrito | (c.pol_vt) in (d.pol_vet)
+	all c:Chamada, d:Distrito | (c.pol_nv) in (d.pol_nov)
+	all c:Chamada, d:Distrito | (c.det) in (d.detetives)
+	all c:Chamada, d:Distrito | (c.xer) in (d.xerife)
 }
 
-/**Functions**/
+pred ChamadasPoliciais{
+	all p:Pol_Veterano |  #(p.~pol_vt) = 1
+	all p:Pol_Novato |  #(p.~pol_nv) = 1
+	all d:Detetive |  #(d.~det) = 1
+	all x:Xerife |  #(x.~xer) = 1
+}
+
+//Codigos
+pred CodigoBranco{
+	all c:Cham_Branco | #(c.pol_vt + c.pol_nv + c.det + c.xer) > 0 
+	all c:Cham_Branco | #(c.pol_vt + c.pol_nv + c.det + c.xer) < 3
+}
+
+pred CodigoVerde{
+	all c:Cham_Verde | #(c.pol_vt + c.pol_nv + c.det + c.xer) > 1 
+	all c:Cham_Verde | #(c.pol_vt + c.pol_nv + c.det + c.xer) < 4
+}
+
+pred CodigoAzul{
+	all c:Cham_Azul | #(c.pol_vt + c.pol_nv + c.det + c.xer) = 4
+}
+
+pred CodigoVermelho{
+	all c:Cham_Vermelho | #(c.det) = 1 && #(c.pol_vt + c.pol_nv + c.xer) = 4
+}
+
 
 /**Asserts**/
 assert ExistePolicialNoDistrito{
-	all dist:Distrito | #(dist.pol_vet + dist.pol_nov + dist.xerife + dist.detetives) != 0
+	all dist:Distrito | #(dist.pol_vet ) = 3
+	all dist:Distrito | #(dist.pol_nov) = 3 
+	all dist:Distrito | #(dist.xerife) = 1 
+	all dist:Distrito |  #(dist.detetives) = 2
 }
 
 assert TestaChamadaAzul{
-	all c:Cham_Azul | #(c.pol_vet + c.pol_nov + c.xer) = 4
+	all c:Cham_Azul | #(c.pol_vt + c.pol_nv + c.xer+c.det) = 4
 }
 
 assert TestaChamadaVermelha{
-	all c:Cham_Vermelho | #(c.pol_vet + c.pol_nov + c.xer + c.det) = 5
+	all c:Cham_Vermelho | #(c.pol_vt + c.pol_nv + c.xer + c.det) = 5
 }
 
 /**Checks**/
