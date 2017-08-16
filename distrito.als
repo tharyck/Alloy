@@ -112,7 +112,7 @@ pred CodigoVermelho{
 assert ExistePolicialNoDistrito{
 	all dist:Distrito | #(dist.pol_vet ) = 3
 	all dist:Distrito | #(dist.pol_nov) = 3 
-	all dist:Distrito | #(dist.xerife) = 1 
+	all dist:Distrito | #getXerifeDistrito[dist] = 1 
 	all dist:Distrito |  #(dist.detetives) = 2
 }
 
@@ -121,7 +121,20 @@ assert TestaChamadaAzul{
 }
 
 assert TestaChamadaVermelha{
-	all c:Cham_Vermelho | #(c.pol_vt + c.pol_nv + c.xer + c.det) = 5
+	all c:Cham_Vermelho | #(getPolicialChamada[c] + c.xer + getDetetiveChamVermelho[c]) = 5
+}
+
+/** Funcoes **/
+fun getXerifeDistrito[d:Distrito] : set Xerife {
+	(d.xerife)
+}
+
+fun getPolicialChamada[c:Chamada] : set Policial {
+	(c.pol_vt + c.pol_nv)
+}
+
+fun getDetetiveChamVermelho[c:Cham_Vermelho] : set Detetive {
+	(c.det)
 }
 
 /**Checks**/
