@@ -84,27 +84,28 @@ pred ChamadasPoliciais{
 
 //Codigos
 pred CodigoBranco{ 
-	all c:Cham_Branco | #(c.pol_vt + c.pol_nv + c.xer) < 3
-	all c:Cham_Branco | #(c.pol_vt + c.xer) > 0
-	all c:Cham_Branco | #(c.det) = 0
+	all c:Cham_Branco | #(c.pol_vt + c.pol_nv + c.xer) < 3 
+								and #(c.pol_vt + c.xer) > 0 
+								and #(c.det) = 0
 }
 
 pred CodigoVerde{
-	all c:Cham_Verde | #(c.pol_vt + c.pol_nv + c.xer) > 1 
-	all c:Cham_Verde | #(c.pol_vt + c.pol_nv + c.xer) < 4
-	all c:Cham_Verde | #(c.pol_vt + c.xer) > 0
-	all c:Cham_Verde | #(c.det) = 0
+	all c:Cham_Verde | #(c.pol_vt + c.pol_nv + c.xer) > 1
+							  and #(c.pol_vt + c.pol_nv + c.xer) < 4
+							  and #(c.pol_vt + c.xer) > 0
+							  and #(c.det) = 0
 }
 
 pred CodigoAzul{
 	all c:Cham_Azul | #(c.pol_vt + c.pol_nv + c.xer) = 4
-	all c:Cham_Azul | #(c.pol_vt + c.xer) > 0
-	all c:Cham_Azul | #(c.det) = 0
+						  and #(c.pol_vt + c.xer) > 0 
+						  and #(c.det) = 0
 }
 
 pred CodigoVermelho{
-	all c:Cham_Vermelho | #(c.det) = 1 && #(c.pol_vt + c.pol_nv + c.xer) = 4
-	all c:Cham_Vermelho | #(c.pol_vt + c.xer) > 0
+	all c:Cham_Vermelho | #(c.det) = 1 
+                                and #(c.pol_vt + c.pol_nv + c.xer) = 4 
+                                and #(c.pol_vt + c.xer) > 0
 }
 
 
