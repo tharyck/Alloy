@@ -78,27 +78,33 @@ pred PoliciaisChamadas {
 pred ChamadasPoliciais{
 	all p:Pol_Veterano |  #(p.~pol_vt) = 1
 	all p:Pol_Novato |  #(p.~pol_nv) = 1
-	all d:Detetive |  #(d.~det) = 1
+	all d:Detetive |   #(d.~det) >= 0
 	all x:Xerife |  #(x.~xer) = 1
 }
 
 //Codigos
-pred CodigoBranco{
-	all c:Cham_Branco | #(c.pol_vt + c.pol_nv + c.det + c.xer) > 0 
-	all c:Cham_Branco | #(c.pol_vt + c.pol_nv + c.det + c.xer) < 3
+pred CodigoBranco{ 
+	all c:Cham_Branco | #(c.pol_vt + c.pol_nv + c.xer) < 3
+	all c:Cham_Branco | #(c.pol_vt + c.xer) > 0
+	all c:Cham_Branco | #(c.det) = 0
 }
 
 pred CodigoVerde{
-	all c:Cham_Verde | #(c.pol_vt + c.pol_nv + c.det + c.xer) > 1 
-	all c:Cham_Verde | #(c.pol_vt + c.pol_nv + c.det + c.xer) < 4
+	all c:Cham_Verde | #(c.pol_vt + c.pol_nv + c.xer) > 1 
+	all c:Cham_Verde | #(c.pol_vt + c.pol_nv + c.xer) < 4
+	all c:Cham_Verde | #(c.pol_vt + c.xer) > 0
+	all c:Cham_Verde | #(c.det) = 0
 }
 
 pred CodigoAzul{
-	all c:Cham_Azul | #(c.pol_vt + c.pol_nv + c.det + c.xer) = 4
+	all c:Cham_Azul | #(c.pol_vt + c.pol_nv + c.xer) = 4
+	all c:Cham_Azul | #(c.pol_vt + c.xer) > 0
+	all c:Cham_Azul | #(c.det) = 0
 }
 
 pred CodigoVermelho{
 	all c:Cham_Vermelho | #(c.det) = 1 && #(c.pol_vt + c.pol_nv + c.xer) = 4
+	all c:Cham_Vermelho | #(c.pol_vt + c.xer) > 0
 }
 
 
@@ -127,4 +133,4 @@ check TestaChamadaVermelha
 pred show[]{
 }
 
-run show for 7
+run show for 10
